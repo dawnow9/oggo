@@ -26,9 +26,9 @@ class ProjectResource extends Resource
     {
         return $form->schema([
             TextInput::make("name")->required()->maxLength(255),
-            MarkdownEditor::make("description")->required(),
             DatePicker::make("start_at")->required(),
             DatePicker::make("end_at"),
+            MarkdownEditor::make("description")->required()->columnSpan(2),
         ]);
     }
 

@@ -29,7 +29,6 @@ class TaskResource extends Resource
     {
         return $form->schema([
             TextInput::make("name")->required(),
-            MarkdownEditor::make("description")->required(),
             DatePicker::make("start_at")->required(),
             DatePicker::make("end_at"),
             Select::make("status")
@@ -38,7 +37,9 @@ class TaskResource extends Resource
             Select::make("user_id")->relationship("user", "name"),
             Select::make("project_id")
                 ->relationship("project", "name")
-                ->required(),
+                ->required()
+                ->hiddenOn("edit"),
+            MarkdownEditor::make("description")->required()->columnSpan(2),
         ]);
     }
 
@@ -50,6 +51,7 @@ class TaskResource extends Resource
                 TextColumn::make("start_at")->searchable()->sortable()->date(),
                 TextColumn::make("end_at")->searchable()->sortable()->date(),
                 TextColumn::make("status")->searchable()->sortable()->badge(),
+                TextColumn::make("project.name")->searchable()->sortable(),
                 TextColumn::make("user.name")->searchable()->sortable(),
             ])
             ->filters([

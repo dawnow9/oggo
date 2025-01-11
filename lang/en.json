@@ -1,0 +1,6 @@
+{
+  "tasks.status.todo": "To Do",
+  "tasks.status.inProgress": "In Progress",
+  "tasks.status.finished": "Finished",
+  "project.action.delete.error.stillHasTasks": "Project still has tasks"
+}

@@ -14,9 +14,9 @@ enum TaskStatus: string implements HasLabel, HasColor
     public function getLabel(): ?string
     {
         return match ($this) {
-            self::TODO => "To Do",
-            self::IN_PROGRESS => "In Progress",
-            self::FINISHED => "Finished",
+            self::TODO => __("tasks.status.todo"),
+            self::IN_PROGRESS => __("tasks.status.inProgress"),
+            self::FINISHED => __("tasks.status.finished"),
         };
     }
 
