@@ -2,33 +2,43 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProjectResource\Pages;
-use App\Models\Project;
+use App\Enums\TaskStatus;
+use App\Filament\Resources\TaskResource\Pages;
+use App\Models\Task;
 use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class ProjectResource extends Resource
+class TaskResource extends Resource
 {
-    protected static ?string $model = Project::class;
+    protected static ?string $model = Task::class;
 
     protected static ?string $navigationIcon = "heroicon-o-rectangle-stack";
 
     public static function form(Form $form): Form
     {
         return $form->schema([
-            TextInput::make("name")->required()->maxLength(255),
+            TextInput::make("name")->required(),
             MarkdownEditor::make("description")->required(),
             DatePicker::make("start_at")->required(),
             DatePicker::make("end_at"),
+            Select::make("status")
+                ->options(TaskStatus::class)
+                ->required(),
+            Select::make("user_id")->relationship("user", "name"),
+            Select::make("project_id")
+                ->relationship("project", "name")
+                ->required(),
         ]);
     }
 
@@ -37,11 +47,13 @@ class ProjectResource extends Resource
         return $table
             ->columns([
                 TextColumn::make("name")->searchable()->sortable(),
-
-                TextColumn::make("start_at")->searchable()->sortable(),
-                TextColumn::make("end_at")->searchable()->sortable(),
+                TextColumn::make("start_at")->searchable()->sortable()->date(),
+                TextColumn::make("end_at")->searchable()->sortable()->date(),
+                TextColumn::make("status")->searchable()->sortable()->badge(),
+                TextColumn::make("user.name")->searchable()->sortable(),
             ])
             ->filters([
+                SelectFilter::make("status")->options(TaskStatus::class),
                 Filter::make("name")
                     ->form([TextInput::make("name")])
                     ->query(
@@ -114,6 +126,7 @@ class ProjectResource extends Resource
                         return $indicators;
                     }),
             ])
+            ->deselectAllRecordsWhenFiltered()
             ->actions([Tables\Actions\EditAction::make()])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -132,9 +145,9 @@ class ProjectResource extends Resource
     public static function getPages(): array
     {
         return [
-            "index" => Pages\ListProjects::route("/"),
-            "create" => Pages\CreateProject::route("/create"),
-            "edit" => Pages\EditProject::route("/{record}/edit"),
+            "index" => Pages\ListTasks::route("/"),
+            "create" => Pages\CreateTask::route("/create"),
+            "edit" => Pages\EditTask::route("/{record}/edit"),
         ];
     }
 }
