@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProjectResource\Pages;
+use App\Filament\Resources\ProjectResource\Widgets\ProjectsCountChart;
 use App\Models\Project;
 use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
