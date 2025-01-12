@@ -20,14 +20,14 @@ class ProjectResource extends Resource
 {
     protected static ?string $model = Project::class;
 
-    protected static ?string $navigationIcon = "heroicon-o-rectangle-stack";
+    protected static ?string $navigationIcon = "heroicon-o-folder";
 
     public static function form(Form $form): Form
     {
         return $form->schema([
             TextInput::make("name")->required()->maxLength(255),
             DatePicker::make("start_at")->required(),
-            DatePicker::make("end_at"),
+            DatePicker::make("end_at")->after("start_at"),
             MarkdownEditor::make("description")->required()->columnSpan(2),
         ]);
     }

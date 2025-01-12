@@ -30,9 +30,10 @@ class TaskResource extends Resource
         return $form->schema([
             TextInput::make("name")->required(),
             DatePicker::make("start_at")->required(),
-            DatePicker::make("end_at"),
+            DatePicker::make("end_at")->after("start_at"),
             Select::make("status")
                 ->options(TaskStatus::class)
+                ->default(TaskStatus::TODO)
                 ->required(),
             Select::make("user_id")->relationship("user", "name"),
             Select::make("project_id")
@@ -55,7 +56,6 @@ class TaskResource extends Resource
                 TextColumn::make("user.name")->searchable()->sortable(),
             ])
             ->filters([
-                SelectFilter::make("status")->options(TaskStatus::class),
                 Filter::make("name")
                     ->form([TextInput::make("name")])
                     ->query(
@@ -70,6 +70,10 @@ class TaskResource extends Resource
                             ): Builder => $query->whereLike("name", $date)
                         )
                     ),
+                SelectFilter::make("status")->options(TaskStatus::class),
+                SelectFilter::make("project_id")
+                    ->label(__("tasks.filters.projectName"))
+                    ->relationship("project", "name"),
                 Filter::make("start_at")
                     ->form([
                         DatePicker::make("start_at_from")->label(
