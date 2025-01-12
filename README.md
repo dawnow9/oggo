@@ -8,4 +8,5 @@ php artisan make:filament-user
 
 composer run dev
 
+dashboard available on `/admin`
 ```
